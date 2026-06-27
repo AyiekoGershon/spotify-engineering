@@ -1,0 +1,13 @@
+[project]
+name = "spotify-data-platform"
+version = "0.1.0"
+description = "Automated cloud pipeline that tracks Spotify music trends with Supabase"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Hermes", email = "hermes@nousresearch.com"}
+]
+
+[project.scripts]
+collect-daily = "scripts.collect_daily:main"
