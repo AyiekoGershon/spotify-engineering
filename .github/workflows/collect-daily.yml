@@ -1,10 +1,10 @@
+# Spotify Daily Data Collection
+
 name: Spotify Daily Data Collection
 
 on:
   schedule:
-    # Runs every day at midnight UTC
-    - cron: "0 0 * * *"
-  # Allow manual triggering from the Actions tab
+    - cron: "0 17 * * *" # 8pm Nairobi time (UTC+3)
   workflow_dispatch:
 
 jobs:
