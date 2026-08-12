@@ -41,9 +41,9 @@ PLAYLIST_ID = os.environ.get("SPOTIFY_PLAYLIST_ID", "7bIhC6dGYVQOFuEG2ym7Rz")  #
 
 # Search queries for search mode (used when playlist access is unavailable)
 SEARCH_QUERIES = [
-    "year:2026",          # Recent tracks
-    "year:2025",          # Last year
-    "genre:afrobeats",   # Popular genre in KE
+    "year:2026",        # Recent tracks
+    "year:2025",        # Last year
+    "genre:afrobeats",  # Popular genre in KE
 ]
 
 logging.basicConfig(
@@ -65,6 +65,7 @@ def get_spotify_client() -> spotipy.Spotify:
     if not client_id or not client_secret:
         log.error("SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET must be set")
         sys.exit(1)
+
     # Authorization Code flow (with refresh token) — required for playlist access
     if refresh_token:
         log.info("Using Authorization Code flow (refresh token)")
@@ -84,11 +85,15 @@ def get_spotify_client() -> spotipy.Spotify:
             log.error("Failed to refresh access token: %s", e)
             log.error("Try re-running: python scripts/get_refresh_token.py")
             sys.exit(1)
+
     log.warning("No SPOTIFY_REFRESH_TOKEN — using Client Credentials (limited access)")
     log.warning("Run: python scripts/get_refresh_token.py to authorize")
-    return spotipy.Spotify(auth_manager=SpotifyClientCredentials(
-        client_id=client_id, client_secret=client_secret,
-    ))
+    return spotipy.Spotify(
+        auth_manager=SpotifyClientCredentials(
+            client_id=client_id,
+            client_secret=client_secret,
+        )
+    )
 
 
 def get_supabase_client():
@@ -101,7 +106,7 @@ def get_supabase_client():
     return create_client(url, key)
 
 
-# ── Data Collection ──────────────────────────────────────────────────────────
+# ── Data Collection ───────────────────────────────────────────────────────────
 
 # Legacy aliases for backward compatibility with tests
 def fetch_playlist_tracks(sp, playlist_id, market="KE"):
@@ -182,11 +187,13 @@ def fetch_via_playlist(sp: spotipy.Spotify) -> dict:
                 limit=limit,
                 offset=offset,
                 market=MARKET,
-                fields="items(track(id,name,popularity,duration_ms,explicit,"
-                       "preview_url,external_urls,external_ids,"
-                       "album(id,name,release_date,images),"
-                       "artists(id,name,external_urls))),"
-                       "total,limit,offset,next",
+                fields=(
+                    "items(track(id,name,popularity,duration_ms,explicit,"
+                    "preview_url,external_urls,external_ids,"
+                    "album(id,name,release_date,images),"
+                    "artists(id,name,external_urls))),"
+                    "total,limit,offset,next"
+                ),
             )
         except Exception:
             raise
